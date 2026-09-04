@@ -2,45 +2,51 @@ package org.firstinspires.ftc.teamcode.DriverControl;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
 
-//Made by Finch (Will)
+import org.firstinspires.ftc.teamcode.Commands.SixWheelCMD;
+import org.firstinspires.ftc.teamcode.Subsystems.Drivetrain;
+import org.firstinspires.ftc.teamcode.Subsystems.Imu;
+import org.firstinspires.ftc.teamcode.Subsystems.Tools;
+
 
 @TeleOp
-public class SixWheelDrive extends OpMode{
+public class SixWheelDrive extends OpMode {
     Drivetrain drivetrain;
-    boolean usingTankDrive = false; //easy switch between tank drive and arcade drive
-    // Difference between arcade drive and tank drive is explained below
+    SixWheelCMD cmd;
+    Tools tools;
+    Imu imu;
 
     public void init() { // called once when INIT is pressed
         //hardware mapping from driver hub
         drivetrain = new Drivetrain(hardwareMap);
+        tools = new Tools(hardwareMap);
+        imu = new Imu(hardwareMap);
 
         telemetry.addData("Status", "Initialized"); // Displays this on Driver Station
         telemetry.update(); // updates the telemetry on the screen
     }
 
-    public void start() {} // called once after ▶ is pressed
+    public void start() {
+    } // called once after ▶ is pressed
 
     public void loop() { // loops after ▶ is pressed
         telemetry.addData("Status", "Started");
+        double y = -gamepad1.left_stick_y; //NOT AN ERROR This is just getting reversed because its input is actually supposed to be reversed, but that would be through trial and error
+        double x = gamepad1.right_stick_x;
+        double leftPower = y + x;
+        double rightPower = y - x;
+        imu.resetHeading();
 
-        // gamepad1: drivetrain gamepad
-        // gamepad2: tools gamepad
-        double leftJoyY = -gamepad1.left_stick_y;
-        double rightJoyY = gamepad1.right_stick_y;
-        double rightJoyX = gamepad1.right_stick_x;
-        // if you need to reverse a control, you can just add "-" before
-
-        if (usingTankDrive) {
-            drivetrain.tankDrive(leftJoyY, rightJoyY);
-            // Left joystick Y axis -> left side of drivetrain
-            // Right joystick Y axis -> right side of drivetrain
-        } else {
-            drivetrain.arcadeDrive(leftJoyY,rightJoyX);
-            // Left joystick Y axis -> drive straight
-            // Right joystick X axis -> turn
+        cmd.setMotors(leftPower, rightPower);
+        if (gamepad2.a) {
+            tools.intakeMotor.setPower(1);
+        }else {
+            tools.intakeMotor.setPower(0);
         }
-        telemetry.update(); // last thing you do in the loop is update telemetry
+        if (gamepad2.b) {
+            tools.intakeMotor.setPower(1);
+        }else {
+            tools.intakeMotor.setPower(0);
+        }
     }
 }

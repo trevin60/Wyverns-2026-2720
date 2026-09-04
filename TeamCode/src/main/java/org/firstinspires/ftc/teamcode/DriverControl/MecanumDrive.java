@@ -21,11 +21,6 @@ public class MecanumDrive extends OpMode {
     public void loop() { // loops after ▶ is pressed
         telemetry.addData("Status", "Started");
 
-        double leftJoyX = gamepad1.left_stick_x;
-        double leftJoyY = -gamepad1.left_stick_y;
-        double rightJoyX = -gamepad1.right_stick_x; // turn
-        drivetrain.mecanumDrive(leftJoyX, leftJoyY, rightJoyX);
-
         telemetry.update();
     }
 }

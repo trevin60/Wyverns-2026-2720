@@ -12,10 +12,11 @@ public class Drivetrain {
     public MotorGroup leftSide, rightSide;
     public SixWheelCMD cmd;
     public Imu imu;
+    public Tools tools;
     public Drivetrain(HardwareMap hMap) {
         // We are defining the motors here:
         // Left side of the robot
-        frontLeft = hMap.get(DcMotorEx.class, "frontLeft");
+        imu = new Imu(hMap);
         backLeft = hMap.get(DcMotorEx.class, "backLeft");
         leftSide = new MotorGroup(
                 frontLeft,
